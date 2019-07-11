@@ -53,25 +53,23 @@ class CryptoProject(object):
                 if password_hash == hashed_password:
                     return password, salt
         #return password, salt
-        return '',''
 
     def get_factors(self, n):
         # TODO: Implement this function for Task 3
         p = 0
         q = 0
-        ni = int(n, 16)
         primes = []
-        for possiblePrime in xrange(2, ni):
+        for possiblePrime in range(2, n):
             primes.append(possiblePrime)
         i = 2
-        while i <= int(math.sqrt(ni)):
+        while i <= int(math.sqrt(n)):
             if i in primes:
-                for j in xrange(i*2, ni+1, i):
+                for j in range(i*2, n+1, i):
                     if j in primes:
                         primes.remove(j)
             i += 1
         for prime in primes:
-            qt = int(ni/prime)
+            qt = int(n/prime)
             if qt in primes:
                 p = prime
                 q = qt
