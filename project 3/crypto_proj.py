@@ -34,6 +34,17 @@ class CryptoProject(object):
             return data[name]
 
     # TODO: OPTIONAL - Add helper functions below
+    # NOTES
+    ## public key (e, N)
+    ## private key (d)
+    ## N = p * q where p, q are distinst prime numbers
+    ## e such that 1 < e < phiN and gcd(e, phiN) = 1 where phiN = (p-1)*(q-1)
+    ## 
+    ## enc m with (N, e) = c
+    ### c = m^e % M
+    ## dec c with d into m
+    ### m = c^d % N
+
     # BEGIN HELPER FUNCTIONS
     # END HELPER FUNCTIONS
 
@@ -79,22 +90,29 @@ class CryptoProject(object):
         # TODO: Implement this function for Task 3
         # d = 0
         phiN = (p-1) * (q-1)
-        d = e - (1 % phiN)
+        d = (1 % phiN)/e
         return d
 
     def is_waldo(self, n1, n2):
+        # n1 is my key, n2 is classmate's key
+        # using keys4student_task_4.json, determine whether n2 belongs to Waldo
         # TODO: Implement this function for Task 4
         result = False
 
         return result
 
     def get_private_key_from_n1_n2_e(self, n1, n2, e):
+        # now that we found Waldo, generate private key using n1 (own key), n2 (Waldo's public key)
         # TODO: Implement this function for Task 4
         d = 0
 
         return d
 
     def recover_msg(self, N1, N2, N3, C1, C2, C3):
+        # e = 3
+        # given 3 pairs of public keys and their encrypted message (Nn, Cn)
+        ## return the origina message
+        ### all keys and messages can be found in keys4student_task_5.json
         # TODO: Implement this function for Task 5
         m = 42
         # Note that 'm' should be an integer
