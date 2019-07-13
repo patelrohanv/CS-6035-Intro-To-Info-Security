@@ -46,6 +46,44 @@ class CryptoProject(object):
     ### m = c^d % N
 
     # BEGIN HELPER FUNCTIONS
+    def modInverse(self, a, m):
+        gcd, x, y = self.exgcd(a, m)
+        if gcd != 1:
+            raise Exception('No modular inverse')
+        return x % m
+
+    def exgcd(self, a, b):
+        if a == 0:
+            return b, 0, 1
+        gcd, y, x = self.exgcd(b%a, a)
+        return gcd, x - (b//a) * y, y
+
+    def crt(self, n, r):
+        k = len(n)
+        prod = 1
+        for i in range(k):
+            prod *= n[i]
+        res = 0
+        for i in range(k):
+            p = prod // n[i]
+            res = res + r[i] * self.modInverse(p, n[i]) * p
+        return res % prod
+
+    def cbrt(self, x):
+        mid = x//2
+        lo = 1
+        hi = x
+        while lo <= hi:
+            c = mid*mid*mid
+            if c == x:
+                return mid
+            elif c > x:
+                lo = mid+1
+            elif c > x:
+                hi = mid-1
+            mid = (hi+lo)//2
+        return 0
+            
     # END HELPER FUNCTIONS
 
     def decrypt_message(self, N, e, d, c):
@@ -69,42 +107,44 @@ class CryptoProject(object):
         # TODO: Implement this function for Task 3
         p = 0
         q = 0
-        primes = []
-        for possiblePrime in range(2, n):
-            primes.append(possiblePrime)
-        i = 2
-        while i <= int(math.sqrt(n)):
-            if i in primes:
-                for j in range(i*2, n+1, i):
-                    if j in primes:
-                        primes.remove(j)
-            i += 1
-        for prime in primes:
-            qt = int(n/prime)
-            if qt in primes:
-                p = prime
-                q = qt
+        sq = math.floor(math.sqrt(n))
+        if sq % 2 == 0:
+            sq -= 1
+        for i in range(sq, n, 2):
+            if n % i == 0:
+                q = int(i)
+                p = int(n/q)
+                break
         return p, q
 
     def get_private_key_from_p_q_e(self, p, q, e):
         # TODO: Implement this function for Task 3
-        # d = 0
         phiN = (p-1) * (q-1)
-        d = (1 % phiN)/e
+        # d = 0
+        d = self.modInverse(e, phiN)
         return d
+        
 
     def is_waldo(self, n1, n2):
         # n1 is my key, n2 is classmate's key
         # using keys4student_task_4.json, determine whether n2 belongs to Waldo
         # TODO: Implement this function for Task 4
-        result = False
-
-        return result
+        # look for common gcd between n1 and n2
+        # if gcd is not one then you have a common p or q
+        # result = False
+        gcd, x, y = self.exgcd(n1, n2)
+        return gcd != 1
 
     def get_private_key_from_n1_n2_e(self, n1, n2, e):
         # now that we found Waldo, generate private key using n1 (own key), n2 (Waldo's public key)
         # TODO: Implement this function for Task 4
-        d = 0
+        # find gcd between n1 and n2, this gives p
+        # divide n1/p to get q
+        p, x, y = self.exgcd(n1, n2)
+        q = n1//p
+        phiN = (p - 1) * (q - 1)
+        #d = 0
+        d = self.modInverse(e, phiN)
 
         return d
 
@@ -114,9 +154,12 @@ class CryptoProject(object):
         ## return the origina message
         ### all keys and messages can be found in keys4student_task_5.json
         # TODO: Implement this function for Task 5
-        m = 42
-        # Note that 'm' should be an integer
+        #  Chinese Remainder
 
+        n = [N1, N2, N3]
+        r = [C1, C2, C3]
+        rem = self.crt(n, r)
+        m = self.cbrt(rem)
         return m
 
     def task_1(self):
