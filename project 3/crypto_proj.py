@@ -13,6 +13,7 @@ class CryptoProject(object):
         # Note that this is NOT your 9-digit Georgia Tech ID
         self.student_id = 'bdornier3'  # for test_crypto_proj_1.py
         # self.student_id = 'ctaylor'  # for test_crypto_proj_2.py
+        # self.student_id = 'rpatel475'
 
     def get_student_id_hash(self):
         return hashlib.sha224(self.student_id.encode('UTF-8')).hexdigest()
@@ -46,18 +47,21 @@ class CryptoProject(object):
     ### m = c^d % N
 
     # BEGIN HELPER FUNCTIONS
+    # muliplicative modular inverse
     def modInverse(self, a, m):
         gcd, x, y = self.exgcd(a, m)
         if gcd != 1:
             raise Exception('No modular inverse')
         return x % m
 
+    # gcd with extended euclidean algorithm
     def exgcd(self, a, b):
         if a == 0:
             return b, 0, 1
         gcd, y, x = self.exgcd(b%a, a)
         return gcd, x - (b//a) * y, y
 
+    # chinese remainder theorem
     def crt(self, n, r):
         k = len(n)
         prod = 1
@@ -69,19 +73,22 @@ class CryptoProject(object):
             res = res + r[i] * self.modInverse(p, n[i]) * p
         return res % prod
 
+    # find cube root of large number
     def cbrt(self, x):
-        mid = x//2
         lo = 1
         hi = x
+        mid = (hi + lo)//2
         while lo <= hi:
+            #  print("hi: " + str(hi) + " , mid: " + str(mid) + " , lo: " + str(lo))
             c = mid*mid*mid
             if c == x:
                 return mid
             elif c > x:
-                lo = mid+1
-            elif c > x:
-                hi = mid-1
-            mid = (hi+lo)//2
+                hi = mid - 1
+            elif c < x:
+                lo = mid + 1
+            mid = (hi + lo)//2
+
         return 0
             
     # END HELPER FUNCTIONS
@@ -155,7 +162,6 @@ class CryptoProject(object):
         ### all keys and messages can be found in keys4student_task_5.json
         # TODO: Implement this function for Task 5
         #  Chinese Remainder
-
         n = [N1, N2, N3]
         r = [C1, C2, C3]
         rem = self.crt(n, r)
