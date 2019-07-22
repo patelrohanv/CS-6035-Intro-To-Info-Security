@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>XSS</title>
+    </head>
+    <!-- interested in: -->
+    <!-- index.php:32 <input type="text" name="login" value="<?php echo @$_POST['login'] ?>"> -->
+    <!-- index.php:34 <input type="password" name="pw"> -->
+    <!-- get this from the document with  -->
+    <!-- document.getElementsByName("login")[0].value and document.getElementsByName("pw")[0].value -->
+    <body onload="document.forms[0].submit()">
+        <form action="" onsubmit="" method="POST">
+        <!--
+        Your exploits here
+        You may also want to change some form attributes
+        index.php:31
+            <input type="hidden" name="secret" value="whatdoido?">
+            login form only passes 'login' and 'pw' to auth.php and 
+                uses RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo to check itself
+        -->
+        <input type="hidden" name="secret" value="whatdoido?">
+        </form>
+    </body>
+</html>
